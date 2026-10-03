@@ -56,3 +56,19 @@ This log documents genuine engineering failures, root causes, applied fixes, and
 - **Fix Applied:** Replaced `nonlocal stream_text` with a mutable container `stream_container = [""]`.
 - **Verification:** Executed `python -c "import ui.dashboard"`; imported with exit code 0.
 - **Lesson Learned:** In script-style frameworks like Streamlit, top-level code runs in module scope, where `nonlocal` cannot bind.
+
+---
+
+### [FL-20261003-06] ModuleNotFoundError: No module named 'app' in Streamlit
+- **Date:** 2026-10-03
+- **Component:** UI Subsystem (`ui/dashboard.py`)
+- **Problem Description:** Launching via `streamlit run ui/dashboard.py` produced `ModuleNotFoundError: No module named 'app'` at line 11.
+- **Root Cause Analysis:** Streamlit prepends the script's immediate directory (`promptops/ui/`) to `sys.path`. Because the application packages (`app/`, `evaluation/`) live at the repository root, Python failed to resolve top-level package imports.
+- **Fix Applied:** Injected project root resolution into `sys.path` at the top of [`ui/dashboard.py`](file:///Users/abhaysingh/Downloads/promptops/ui/dashboard.py):
+  ```python
+  ROOT_DIR = Path(__file__).resolve().parent.parent
+  if str(ROOT_DIR) not in sys.path:
+      sys.path.insert(0, str(ROOT_DIR))
+  ```
+- **Verification:** Verified clean import and execution in subfolder context; pushed to GitHub (`c87061c`).
+- **Lesson Learned:** Always explicitly anchor the workspace root in `sys.path` when placing frontend entrypoints in nested subdirectories.
