@@ -1,0 +1,29 @@
+name: "event_brief"
+version: "v1.0"
+description: "Initial baseline prompt for extracting event briefs from natural language instructions."
+task_type: "event_brief"
+output_schema: "schemas/event_brief.json"
+variables:
+  - name: "instruction"
+    description: "The raw natural language user instruction or trip description"
+    required: true
+model_requirements:
+  temperature: 0.0
+  max_tokens: 1024
+  response_format: "json"
+metadata:
+  author: "CLAW PromptOps Team"
+  tags: ["extraction", "logistics", "baseline"]
+creation_date: "2026-10-03"
+change_description: "Initial baseline prompt version."
+template: |
+  You are an AI assistant that converts event and trip instructions into JSON.
+
+  Extract the event information from the following user instruction:
+  {{instruction}}
+
+  Return a JSON object with:
+  - event_name
+  - date
+  - location
+  - description

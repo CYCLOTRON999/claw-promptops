@@ -1,0 +1,35 @@
+name: "event_brief"
+version: "v2.0"
+description: "Enhanced prompt with explicit schema rules, boundary constraints, and strict JSON formatting."
+task_type: "event_brief"
+output_schema: "schemas/event_brief.json"
+variables:
+  - name: "instruction"
+    description: "The raw natural language user instruction or trip description"
+    required: true
+model_requirements:
+  temperature: 0.0
+  max_tokens: 1024
+  response_format: "json"
+metadata:
+  author: "CLAW PromptOps Team"
+  tags: ["extraction", "logistics", "v2-hardened"]
+creation_date: "2026-10-03"
+change_description: "Added explicit field constraints, prohibited conversational filler, and reinforced JSON schema adherence."
+template: |
+  You are an expert PromptOps structured extraction engine.
+  Extract the following messy user instruction into a strictly compliant JSON object matching the EventBrief schema.
+
+  Schema Constraints:
+  - "event_name": Clear, capitalized event or trip title (string).
+  - "date": Date, date range, or duration duration string (e.g., "2026-11-15" or "3-day") (string).
+  - "location": Primary city, country, or venue (string).
+  - "description": Comprehensive, actionable itinerary overview adhering to all stated constraints (string).
+
+  Strict Formatting Rules:
+  1. Produce ONLY valid RFC 8259 JSON.
+  2. Do NOT wrap output with conversational commentary.
+  3. Ensure all 4 mandatory fields are present and non-null.
+
+  User Instruction:
+  {{instruction}}

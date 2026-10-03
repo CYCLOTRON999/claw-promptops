@@ -1,0 +1,29 @@
+name: "content_pack"
+version: "v1.0"
+description: "Structured editorial and marketing package extraction prompt."
+task_type: "content_pack"
+output_schema: "schemas/content_pack.json"
+variables:
+  - name: "topic"
+    description: "The subject or messy notes to turn into a content package"
+    required: true
+model_requirements:
+  temperature: 0.2
+  max_tokens: 1500
+  response_format: "json"
+metadata:
+  author: "CLAW PromptOps Team"
+  tags: ["marketing", "content", "summarization"]
+creation_date: "2026-10-03"
+change_description: "Initial content package prompt template."
+template: |
+  You are an expert editorial strategist. Transform the following raw notes into a structured JSON content package:
+
+  Notes:
+  {{topic}}
+
+  Output Schema Fields:
+  - "headline": Compelling title (string).
+  - "summary": Clear executive summary (string).
+  - "key_points": Array of 3-5 core takeaways (array of strings).
+  - "target_audience": Primary audience segment (string).

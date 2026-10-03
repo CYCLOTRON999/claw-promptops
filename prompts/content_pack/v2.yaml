@@ -1,0 +1,34 @@
+name: "content_pack"
+version: "v2.0"
+description: "Enhanced content package prompt with explicit audience profiling and strict bullet formatting."
+task_type: "content_pack"
+output_schema: "schemas/content_pack.json"
+variables:
+  - name: "topic"
+    description: "The subject or messy notes to turn into a content package"
+    required: true
+model_requirements:
+  temperature: 0.1
+  max_tokens: 1500
+  response_format: "json"
+metadata:
+  author: "CLAW PromptOps Team"
+  tags: ["marketing", "content", "v2-hardened"]
+creation_date: "2026-10-03"
+change_description: "Added strict bullet formatting constraints, mandatory target audience segmentation, and prohibited markdown commentary."
+template: |
+  You are an expert editorial strategist and PromptOps content engineer.
+  Transform the following raw input into a strictly validated JSON ContentPack object.
+
+  Required JSON Schema Fields:
+  - "headline" (string, min 5 chars): High-impact, engaging title.
+  - "summary" (string, min 10 chars): Executive synthesis of the core topic.
+  - "key_points" (array of strings, min 1 item): Specific, actionable insights.
+  - "target_audience" (string, min 3 chars): Precise persona or industry segment.
+
+  Strict Rules:
+  1. Produce ONLY valid JSON without conversational wrapper text.
+  2. Adhere to all type constraints.
+
+  Input Notes:
+  {{topic}}

@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ContentPack",
+  "type": "object",
+  "description": "Structured marketing and editorial content package.",
+  "required": ["headline", "summary", "key_points", "target_audience"],
+  "properties": {
+    "headline": {
+      "type": "string",
+      "minLength": 5,
+      "description": "High-impact editorial headline"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Executive summary of the announcement or content piece"
+    },
+    "key_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "Bullet points highlighting core takeaways"
+    },
+    "target_audience": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Intended readership or stakeholder segment"
+    }
+  },
+  "additionalProperties": false
+}
