@@ -2,10 +2,16 @@
 
 import asyncio
 import json
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import streamlit as st
+
+# Ensure project root is in sys.path when launched as streamlit run ui/dashboard.py
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
 # Application imports
 from app.adapters import list_available_models, get_adapter
