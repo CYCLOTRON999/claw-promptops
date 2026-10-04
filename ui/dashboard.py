@@ -146,6 +146,7 @@ st.markdown("""
 init_db()
 generator = PromptOpsGenerator()
 suite_runner = EvaluationSuiteRunner()
+suite_runner.seed_database()
 experiment_runner = ExperimentRunner()
 
 
