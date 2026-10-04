@@ -142,22 +142,33 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# Initialize Database & Core Services
-init_db()
-generator = PromptOpsGenerator()
-suite_runner = EvaluationSuiteRunner()
-suite_runner.seed_database()
-experiment_runner = ExperimentRunner()
+# Initialize Database & Core Services using Streamlit resource caching
+@st.cache_resource
+def get_platform_services():
+    """Instantiate singleton platform services across Streamlit reruns."""
+    init_db()
+    gen = PromptOpsGenerator()
+    suite = EvaluationSuiteRunner(generator=gen)
+    suite.seed_database()
+    exp = ExperimentRunner()
+    return gen, suite, exp
+
+
+generator, suite_runner, experiment_runner = get_platform_services()
 
 
 def run_async(coro):
-    """Run an async coroutine synchronously inside Streamlit event loop."""
+    """Run an async coroutine synchronously inside Streamlit execution environment."""
+    import concurrent.futures
     try:
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
     except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-    return loop.run_until_complete(coro)
+        loop = None
+
+    if loop and loop.is_running():
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+            return pool.submit(asyncio.run, coro).result()
+    return asyncio.run(coro)
 
 
 # Sidebar Navigation & Platform Header

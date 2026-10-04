@@ -18,8 +18,6 @@ class EvaluationSuiteRunner:
     def __init__(self, test_cases_path: Optional[Path] = None, generator: Optional[PromptOpsGenerator] = None):
         self.test_cases_path = test_cases_path or (Path(__file__).parent / "test_cases.json")
         self.generator = generator or PromptOpsGenerator()
-        from app.prompts.registry import default_prompt_registry
-        default_prompt_registry.reload()
         init_db()
 
     def load_test_cases(self) -> List[Dict[str, Any]]:

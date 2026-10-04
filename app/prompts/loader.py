@@ -55,11 +55,26 @@ def discover_prompts(prompts_dir: Path) -> List[PromptDefinition]:
     if not prompts_dir.exists():
         return definitions
 
-    for yaml_path in prompts_dir.rglob("*.yaml"):
+    seen_paths = set()
+    seen_prompts = set()
+
+    for yaml_path in sorted(prompts_dir.rglob("*.yaml")):
+        # Skip hidden or temporary editor backup files
+        if yaml_path.name.startswith(".") or yaml_path.name.endswith("~"):
+            continue
         try:
-            definition = load_prompt_from_yaml(yaml_path)
+            resolved = yaml_path.resolve()
+            if resolved in seen_paths:
+                continue
+            seen_paths.add(resolved)
+
+            definition = load_prompt_from_yaml(resolved)
+            prompt_key = (definition.name, definition.version)
+            if prompt_key in seen_prompts:
+                continue
+            seen_prompts.add(prompt_key)
             definitions.append(definition)
-        except Exception as exc:
+        except Exception:
             # Skip invalid YAML or malformed file during discovery
             continue
 

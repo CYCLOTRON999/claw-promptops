@@ -25,7 +25,7 @@ class PromptRegistry:
         self._registry.clear()
         prompts = discover_prompts(self.prompts_dir)
         for p in prompts:
-            self.register(p, allow_overwrite=False)
+            self.register(p, allow_overwrite=True)
 
     def register(self, prompt: PromptDefinition, allow_overwrite: bool = False) -> None:
         """Register a new prompt version. Rejects modifications to existing immutable versions."""
