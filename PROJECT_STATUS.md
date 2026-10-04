@@ -35,6 +35,7 @@
 | **Experiment Engine** | `COMPLETED` | Side-by-side prompt version (`v1` vs `v2`) and model (`Model A` vs `Model B`) benchmarking |
 | **FastAPI REST API** | `COMPLETED` | Health, models, prompts, generate, stream, validate, experiments, runs, metrics, failures |
 | **Streamlit Dashboard** | `COMPLETED` | 9 professional pages (Overview, Generate, Registry, Models, Experiments, Tests, Runs, Failures, Metrics) |
+| **Streamlit Cloud Deployment** | `COMPLETED` | Root `streamlit_app.py`, theme tokens (`.streamlit/config.toml`), `@st.cache_resource` lifecycle optimization |
 | **Docker Support** | `COMPLETED` | `Dockerfile` and `docker-compose.yml` |
 | **Documentation & Logs** | `COMPLETED` | `README.md`, `architecture.md`, `design_decisions.md`, `evaluation.md`, `failure_log.md`, `AI_USAGE.md` |
 

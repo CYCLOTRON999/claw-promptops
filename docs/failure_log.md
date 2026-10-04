@@ -72,3 +72,18 @@ This log documents genuine engineering failures, root causes, applied fixes, and
   ```
 - **Verification:** Verified clean import and execution in subfolder context; pushed to GitHub (`c87061c`).
 - **Lesson Learned:** Always explicitly anchor the workspace root in `sys.path` when placing frontend entrypoints in nested subdirectories.
+
+---
+
+### [FL-20261004-07] PromptRegistryError During Streamlit Cloud Deployment & Rerun Cycle
+- **Date:** 2026-10-04
+- **Component:** Prompt Registry & Streamlit UI (`app/prompts/loader.py`, `app/prompts/registry.py`, `ui/dashboard.py`)
+- **Problem Description:** When deployed to Streamlit Community Cloud (`*.streamlit.app`), entering input or executing generation crashed with `app.prompts.registry.PromptRegistryError: Prompt version '...' is immutable and already registered.`
+- **Root Cause Analysis:** Streamlit Cloud's containerized Linux environment (OverlayFS) can return duplicate entries/inodes during `rglob("*.yaml")` filesystem traversals. Furthermore, Streamlit reruns the script on user interaction, which re-instantiated `EvaluationSuiteRunner()` and called `default_prompt_registry.reload()`. Because `reload()` called `self.register(p, allow_overwrite=False)`, duplicate file references triggered a false immutability collision error.
+- **Fix Applied:**
+  1. Deduplicated discovery in `app/prompts/loader.py` by resolving real paths (`seen_paths`) and tracking prompt keys (`seen_prompts`), while filtering out hidden/temporary editor files.
+  2. Set `allow_overwrite=True` in `PromptRegistry.reload()` so filesystem rescans are strictly idempotent.
+  3. Removed redundant `default_prompt_registry.reload()` from `EvaluationSuiteRunner.__init__`.
+  4. Wrapped core platform service initialization in `ui/dashboard.py` with `@st.cache_resource` and hardened `run_async` for multi-threaded loop execution.
+- **Verification:** All 32 pytest unit and integration tests passing; clean execution verified under multiple simulated reruns and pushed to GitHub (`2e9a451`).
+- **Lesson Learned:** Always ensure file-based reloads are idempotent, deduplicate directory walks in containerized/overlay filesystems, and use framework-native resource caching (`@st.cache_resource`) for service singletons.
